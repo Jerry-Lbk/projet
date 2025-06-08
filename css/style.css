@@ -1,0 +1,128 @@
+ * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      text-decoration: none;
+      list-style: none;
+    }
+
+    body {
+      font-size: 24px;
+      overflow-x: hidden;
+    }
+
+    nav {
+      background-color: #fff;
+      height: 80px;
+      width: 100%;
+      margin-bottom: 50px;
+    }
+
+    nav ul {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      justify-content: end;
+      height: 100%;
+      padding-right: 20px;
+    }
+
+    a {
+      color: black;
+    }
+
+    a:hover {
+      text-decoration: underline;
+      text-decoration-color: rgb(0, 0, 0);
+    }
+
+    .bouton,
+    .menu-hidden {
+      display: none;
+    }
+
+    @media (max-width: 800px) {
+      nav {
+        display: none;
+      } .bouton {
+    display: flex;
+    justify-content: flex-end;
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    z-index: 1001;
+  }
+
+  .menu {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    font-size: 1.8rem;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+  }
+
+  .menu:hover {
+    background-color: rgba(0, 0, 0, 0.9);
+    transform: scale(1.05);
+  }
+}
+
+
+      .menu-hidden {
+        display: none;
+        background-color: rgba(0, 0, 0, 0.9);
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        z-index: 1000;
+        padding: 50px 20px;
+        color: white;
+        flex-direction: column;
+        gap: 20px;
+      }
+      
+      .menu-hidden ul {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .menu-hidden a {
+        color: white;
+        font-size: 24px;
+        text-align: center;
+      }
+
+      .menu-hidden .close {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 20px;
+        font-weight: bold;
+      }
+
+      .presentation {
+        margin-top: 60px;
+        padding: 1.5rem;
+      }
+
+      .presentation h1 {
+        font-size: 2rem;
+      }
+
+      .presentation p {
+        font-size: 1rem;
+      }
+
+      footer {
+        font-size: 0.8rem;
+      }
