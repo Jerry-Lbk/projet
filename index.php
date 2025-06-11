@@ -11,7 +11,6 @@
       width: 250px;
       height: 250px;
       margin: 20px;
-      /* Increased margin for better spacing */
       object-fit: cover;
       display: inline-block;
       /* Align sections horizontally */
@@ -82,7 +81,7 @@
   </section>
 
   <section class="visit">
-    <a href="formulaire.php" target="_blank">
+    <a href="register.php" target="_blank">
       <img src="creer.png" alt="cree votre propre portfolio" />
     </a>
     <h5>creer votre portfolio</h5>
