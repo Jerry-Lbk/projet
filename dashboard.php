@@ -47,9 +47,10 @@ try {
 
     <p><strong>Email :</strong> <?= htmlspecialchars($utilisateur['email']) ?></p>
     <a href="profil.php" class="btn">Modifier mon profil</a>
-    <a href="portfolio.php?id=<?php echo  $_SESSION["utilisateur_id"]  ?>" class="btn">voir mon portfolio</a>
+    <a href="portfolio.php?id=<?= $_SESSION["utilisateur_id"] ?>" class="btn">Voir mon portfolio</a>
     <a href="ajouter_projet.php" class="btn">➕ Ajouter un projet</a>
-    <a href="theme.php" class="btn"> Modifier le thème</a>
+    <a href="modifier_description.php" class="btn">Modifier la description</a>
+    <a href="theme.php" class="btn">Modifier le thème</a>
     <a href="logout.php" class="btn" style="background: #dc3545;">Se déconnecter</a>
 </div>
 </body>
