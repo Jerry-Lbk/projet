@@ -8,7 +8,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $mot_de_passe = $_POST["mot_de_passe"];
 
         try {
-            $db = new PDO("sqlite:db/ma_base.db");
+            $db = new PDO("sqlite:../db/ma_base.db");
             $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             $stmt = $db->prepare("SELECT * FROM utilisateurs WHERE email = :email");

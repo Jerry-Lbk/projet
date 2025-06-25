@@ -1,23 +1,56 @@
 <?php
 session_start();
-$db = new PDO('sqlite:./ma_base.db'); // adapte le chemin si besoin
+
+$db = new PDO("sqlite:../db/ma_base.db");
+
+// Ajoute la colonne theme_id si elle n'existe pas déjà
+try {
+    $db->exec("ALTER TABLE utilisateurs ADD COLUMN theme_id INTEGER");
+} catch (PDOException $e) {
+    // Ignore l'erreur si la colonne existe déjà
+    if (strpos($e->getMessage(), 'duplicate column name') === false) {
+        throw $e;
+    }
+}
+
+// Vérifie que l'utilisateur est connecté
+if (!isset($_SESSION["utilisateur_id"])) {
+    header("Location: login.php");
+    exit();
+}
+$user_id = $_SESSION["utilisateur_id"];
 
 // Récupère tous les thèmes
 $themes = $db->query("SELECT * FROM themes")->fetchAll(PDO::FETCH_ASSOC);
 
+// Récupère les infos de l'utilisateur
+$stmt = $db->prepare("SELECT * FROM utilisateurs WHERE id = :id");
+$stmt->bindParam(':id', $user_id);
+$stmt->execute();
+$utilisateur = $stmt->fetch(PDO::FETCH_ASSOC);
+
 // Change le thème si formulaire soumis
 if (isset($_POST['theme_id'])) {
     $theme_id = (int)$_POST['theme_id'];
-    // ici, tu dois adapter pour l'utilisateur courant, on suppose id=1
-    $db->prepare("UPDATE users SET theme_id=? WHERE id=?")->execute([$theme_id, 1]);
+    $db->prepare("UPDATE utilisateurs SET theme_id=? WHERE id=?")->execute([$theme_id, $user_id]);
     $_SESSION['success'] = "Thème modifié !";
     header("Location: theme.php");
     exit();
 }
 
 // Récupère le thème actuel
-$user = $db->query("SELECT * FROM users WHERE id=1")->fetch(PDO::FETCH_ASSOC);
-$current_theme_id = $user ? $user['theme_id'] : null;
+$current_theme_id = isset($utilisateur['theme_id']) ? $utilisateur['theme_id'] : null;
+
+// Récupère la couleur principale du thème sélectionné
+$primary_color = "#f8f8f8"; // couleur par défaut
+if ($current_theme_id) {
+    foreach ($themes as $theme) {
+        if ($theme['id'] == $current_theme_id) {
+            $primary_color = $theme['primary_color'];
+            break;
+        }
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -27,7 +60,7 @@ $current_theme_id = $user ? $user['theme_id'] : null;
     <style>
         body {
             font-family: sans-serif;
-            background: #f8f8f8;
+            background: <?= htmlspecialchars($primary_color) ?>;
             padding: 2em;
             text-align: center;
         }

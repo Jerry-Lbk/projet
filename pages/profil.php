@@ -10,7 +10,7 @@ $erreur = "";
 $message = "";
 
 try {
-    $db = new PDO("sqlite:db/ma_base.db");
+    $db = new PDO("sqlite:../db/ma_base.db");
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Récupérer les infos actuelles
@@ -19,7 +19,7 @@ try {
     $stmt->execute();
     $utilisateur = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['nom'], $_POST['email'])) {
         $nouveau_nom = $_POST["nom"];
         $nouvel_email = $_POST["email"];
         $nouveau_mdp = $_POST["mot_de_passe"];
@@ -43,6 +43,22 @@ try {
         } else {
             $erreur = "Tous les champs sauf le mot de passe sont obligatoires.";
         }
+    }
+
+    // Gestion de l'upload de photo
+    if (isset($_POST['upload_photo']) && isset($_FILES['photo']) && $_FILES['photo']['error'] == 0) {
+        $target_dir = "../uploads/";
+        if (!is_dir($target_dir)) mkdir($target_dir, 0777, true);
+        $ext = strtolower(pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION));
+        $filename = "user_" . $_SESSION["utilisateur_id"] . "." . $ext;
+        $target_file = $target_dir . $filename;
+        move_uploaded_file($_FILES['photo']['tmp_name'], $target_file);
+
+        // Enregistre le chemin relatif dans la base
+        $stmt = $db->prepare("UPDATE utilisateurs SET photo = ? WHERE id = ?");
+        $stmt->execute(["uploads/" . $filename, $_SESSION["utilisateur_id"]]);
+        header("Location: profil.php");
+        exit();
     }
 } catch (PDOException $e) {
     $erreur = "Erreur de base de données : " . $e->getMessage();
@@ -71,6 +87,11 @@ try {
         <input type="email" name="email" value="<?= htmlspecialchars($utilisateur['email']) ?>" placeholder="Email"><br>
         <input type="password" name="mot_de_passe" placeholder="Nouveau mot de passe (laisser vide si inchangé)"><br>
         <input type="submit" value="Mettre à jour">
+    </form>
+
+    <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="photo" accept="image/*"><br>
+        <input type="submit" name="upload_photo" value="Changer la photo de profil">
     </form>
 
     <p><a href="dashboard.php">⬅ Retour au dashboard</a></p>

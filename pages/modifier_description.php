@@ -1,23 +1,28 @@
 <?php
 session_start();
-$db = new PDO('sqlite:./ma_base.db'); // Adapte le chemin si besoin
 
-// Pour l'exemple, on suppose que l'utilisateur connecté a l'id=1
-$user_id = 1;
+// Vérifie que l'utilisateur est connecté
+if (!isset($_SESSION['utilisateur_id'])) {
+    header("Location: login.php");
+    exit();
+}
+
+$user_id = $_SESSION['utilisateur_id'];
+$db = new PDO("sqlite:../db/ma_base.db");
 
 // Récupération de la description actuelle
-$stmt = $db->prepare("SELECT description FROM users WHERE id = ?");
+$stmt = $db->prepare("SELECT description FROM utilisateurs WHERE id = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
-$current_description = $user ? $user['description'] : "";
+$current_description = isset($user['description']) && $user['description'] !== null ? $user['description'] : "";
 
 // Traitement du formulaire
 if (isset($_POST['description'])) {
     $desc = trim($_POST['description']);
-    $stmt = $db->prepare("UPDATE users SET description = ? WHERE id = ?");
+    $stmt = $db->prepare("UPDATE utilisateurs SET description = ? WHERE id = ?");
     $stmt->execute([$desc, $user_id]);
     $_SESSION['success'] = "Description mise à jour !";
-    header("Location: description.php");
+    header("Location: modifier_description.php");
     exit();
 }
 ?>
