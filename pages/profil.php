@@ -47,7 +47,7 @@ try {
 
     // Gestion de l'upload de photo
     if (isset($_POST['upload_photo']) && isset($_FILES['photo']) && $_FILES['photo']['error'] == 0) {
-        $target_dir = "../uploads/";
+        $target_dir = "../images/";
         if (!is_dir($target_dir)) mkdir($target_dir, 0777, true);
         $ext = strtolower(pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION));
         $filename = "user_" . $_SESSION["utilisateur_id"] . "." . $ext;
@@ -56,7 +56,7 @@ try {
 
         // Enregistre le chemin relatif dans la base
         $stmt = $db->prepare("UPDATE utilisateurs SET photo = ? WHERE id = ?");
-        $stmt->execute(["uploads/" . $filename, $_SESSION["utilisateur_id"]]);
+        $stmt->execute(["images/" . $filename, $_SESSION["utilisateur_id"]]);
         header("Location: profil.php");
         exit();
     }
@@ -80,6 +80,10 @@ try {
     <?php endif; ?>
     <?php if ($message): ?>
         <p style="color:green"><?= $message ?></p>
+    <?php endif; ?>
+
+    <?php if (!empty($utilisateur['photo'])): ?>
+        <img src="<?= htmlspecialchars($utilisateur['photo']) ?>" alt="Photo de profil" class="profile-img"><br>
     <?php endif; ?>
 
     <form method="POST" enctype="">

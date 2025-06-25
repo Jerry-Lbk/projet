@@ -8,6 +8,10 @@ try {
     exit();
 }
 
+// Script de correction à exécuter une fois
+$stmt = $db->prepare("UPDATE utilisateurs SET photo = REPLACE(photo, '../images/', 'images/') WHERE photo LIKE '../images/%'");
+$stmt->execute();
+
 // Vérifier si un ID est fourni dans l’URL
 if (!isset($_GET['id'])) {
     echo "Aucun portfolio sélectionné.";
@@ -66,90 +70,68 @@ if ($current_theme_id) {
             --link-hover: <?= ($primary_color == "#007bff" ? "#0056b3" : "#007bff") ?>;
         }
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: var(--background);
-            color: var(--text);
-            padding: 2em;
+            font-family: Arial, sans-serif;
+            background: #f8f8f8;
+            color: #222831;
             margin: 0;
-            min-height: 100vh;
+            padding: 20px;
             text-align: center;
-            transition: background 0.5s, color 0.5s;
         }
         .container {
-            background: var(--card);
-            color: var(--text);
-            padding: 32px 24px;
-            max-width: 800px;
-            margin: 32px auto;
-            border-radius: 14px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-            transition: background 0.5s, color 0.5s;
+            background: #fff;
+            color: #222831;
+            max-width: 700px;
+            margin: 30px auto;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px #eee;
         }
         .profile-img {
-            width: 140px;
-            height: 140px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
             object-fit: cover;
-            border: 4px solid var(--primary);
-            margin-bottom: 18px;
+            border: 3px solid #007bff;
+            margin-bottom: 15px;
             background: #fff;
         }
         h1 {
             margin-top: 0;
-            font-size: 2.2em;
-            color: var(--primary);
-            letter-spacing: 1px;
+            color: #007bff;
         }
         h2 {
-            margin-top: 32px;
-            color: var(--primary);
-            font-size: 1.3em;
-            letter-spacing: 1px;
+            margin-top: 30px;
+            color: #393e46;
+            font-size: 1.2em;
         }
-        a {
-            color: var(--link);
+        a.btn {
+            display: inline-block;
+            background: #007bff;
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 5px;
             text-decoration: none;
-            font-weight: 500;
-            transition: color 0.2s;
+            margin: 8px 0;
+            transition: background 0.2s;
         }
-        a:hover {
-            color: var(--link-hover);
-            text-decoration: underline;
+        a.btn:hover {
+            background: #0056b3;
         }
         ul {
             padding: 0;
             margin: 0;
         }
         li {
-            margin-bottom: 18px;
-            background: <?= ($primary_color == "#222831" ? "#23272f" : "#f4f4f4") ?>;
-            color: var(--text);
-            padding: 18px 16px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
             list-style: none;
+            background: #f4f4f4;
+            margin-bottom: 15px;
+            padding: 14px;
+            border-radius: 8px;
             text-align: left;
         }
         .projet-titre {
-            font-size: 1.1em;
-            color: var(--primary);
             font-weight: bold;
-        }
-        .btn {
-            display: inline-block;
-            background: var(--primary);
-            color: #fff;
-            border: none;
-            padding: 10px 22px;
-            border-radius: 6px;
-            font-size: 1em;
-            margin: 10px 0;
-            cursor: pointer;
-            text-decoration: none;
-            transition: background 0.3s;
-        }
-        .btn:hover {
-            background: var(--link-hover);
+            color: #007bff;
         }
         @media (max-width: 600px) {
             .container {
@@ -168,7 +150,7 @@ if ($current_theme_id) {
 <body>
 <div class="container">
     <?php if (!empty($utilisateur['photo'])): ?>
-        <img src="<?= htmlspecialchars($utilisateur['photo']) ?>" alt="Photo de profil" class="profile-img">
+        <img src="../<?= htmlspecialchars($utilisateur['photo']) ?>" alt="Photo de profil" class="profile-img">
     <?php endif; ?>
 
     <h1><?= htmlspecialchars($utilisateur['nom']) ?></h1>
