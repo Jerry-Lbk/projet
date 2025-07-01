@@ -3,7 +3,21 @@ try {
     $db = new PDO("sqlite:../db/ma_base.db");
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Créer la table projets si elle n'existe pas
+    // Table utilisateurs
+    $db->exec("
+        CREATE TABLE IF NOT EXISTS utilisateurs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nom TEXT NOT NULL,
+            email TEXT NOT NULL UNIQUE,
+            mot_de_passe TEXT NOT NULL,
+            description TEXT,
+            photo TEXT,
+            theme_id INTEGER DEFAULT 1,
+            FOREIGN KEY(theme_id) REFERENCES themes(id)
+        );
+    ");
+
+    // Table projets avec colonne image
     $db->exec("
         CREATE TABLE IF NOT EXISTS projets (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -11,48 +25,13 @@ try {
             titre TEXT NOT NULL,
             description TEXT,
             lien TEXT,
+            image TEXT,
             
-            FOREIGN KEY (utilisateur_id) REFERENCES utilisateurs(id)
+            FOREIGN KEY(utilisateur_id) REFERENCES utilisateurs(id)
         );
     ");
 
-    echo "✅ Table 'projets' prête.<br>";
-
-    // Vérifier s’il y a déjà des projets
-    $check = $db->query("SELECT COUNT(*) FROM projets");
-    $nb = $check->fetchColumn();
-
-    if ($nb == 0) {
-        // Ajouter un projet test
-        $stmt = $db->prepare("
-            INSERT INTO projets (utilisateur_id, titre, description, lien)
-            VALUES (:uid, :titre, :desc, :lien)
-        ");
-        $stmt->execute([
-            ':uid' => 1,
-            ':titre' => 'Mon premier site',
-            ':desc' => 'Un petit site vitrine fait en HTML/CSS.',
-            ':lien' => 'https://monsite.test'
-        ]);
-
-        echo "✅ Projet test ajouté pour l’utilisateur ID 1.<br>";
-    } else {
-        echo "ℹ️ La table contient déjà des projets, rien à ajouter.<br>";
-    }
-
-    // Ajoute la colonne description si elle n'existe pas déjà
-    try {
-        $db->exec("ALTER TABLE utilisateurs ADD COLUMN description TEXT");
-        echo "✅ Colonne 'description' ajoutée à la table 'utilisateurs'.<br>";
-    } catch (PDOException $e) {
-        if (strpos($e->getMessage(), 'duplicate column name') !== false) {
-            echo "ℹ️ La colonne 'description' existe déjà.<br>";
-        } else {
-            throw $e;
-        }
-    }
-
-    // Créer la table themes si elle n'existe pas
+    // Table themes avec custom_css
     $db->exec("
         CREATE TABLE IF NOT EXISTS themes (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -60,23 +39,20 @@ try {
             primary_color TEXT NOT NULL
         );
     ");
-    echo "✅ Table 'themes' prête.<br>";
 
-    // Ajouter des thèmes par défaut si la table est vide
-    $nbThemes = $db->query("SELECT COUNT(*) FROM themes")->fetchColumn();
-    if ($nbThemes == 0) {
-        $db->exec("
-            INSERT INTO themes (name, primary_color) VALUES
-            ('Clair', '#ffffff'),
-            ('Sombre', '#222831'),
-            ('Bleu', '#007bff')
-        ");
-        echo "✅ Thèmes par défaut ajoutés.<br>";
-    } else {
-        echo "ℹ️ La table 'themes' contient déjà des données, rien à ajouter.<br>";
-    }
+    // Quelques thèmes par défaut
+    $db->exec("
+        INSERT OR IGNORE INTO themes (id, name, primary_color) VALUES
+        (1, 'Clair', '#007bff'),
+        (2, 'Sombre', '#222831'),
+        (3, 'Bleu', '#00adb5')
+    ");
 
+    // Ajout de la colonne custom_css à la table themes
+    $db->exec("ALTER TABLE themes ADD COLUMN custom_css TEXT");
+
+    echo "Base de données initialisée avec succès.";
 } catch (PDOException $e) {
-    echo "❌ Erreur : " . $e->getMessage();
+    echo "Erreur : " . $e->getMessage();
 }
 ?>

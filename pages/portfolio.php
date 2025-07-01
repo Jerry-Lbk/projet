@@ -53,6 +53,21 @@ if ($current_theme_id) {
         }
     }
 }
+
+// Récupère le thème de l'utilisateur, ou le thème par défaut (id=1) si non défini
+$theme_id = !empty($utilisateur['theme_id']) ? $utilisateur['theme_id'] : 1;
+$stmt = $db->prepare("SELECT * FROM themes WHERE id = ?");
+$stmt->execute([$theme_id]);
+$theme = $stmt->fetch(PDO::FETCH_ASSOC);
+if (!$theme) {
+    // Valeurs de secours si jamais la table themes est vide
+    $theme = [
+        'primary_color' => '#007bff'
+    ];
+}
+
+// Ajout du thème par défaut si aucun thème n'existe
+$db->exec("INSERT OR IGNORE INTO themes (id, name, primary_color) VALUES (1, 'Clair', '#007bff')");
 ?>
 
 <!DOCTYPE html>
@@ -60,92 +75,15 @@ if ($current_theme_id) {
 <head>
     <meta charset="UTF-8">
     <title>Portfolio</title>
-    <style>
-        :root {
-            --primary: <?= htmlspecialchars($primary_color) ?>;
-            --background: <?= ($primary_color == "#222831" ? "#222831" : ($primary_color == "#007bff" ? "#eaf4ff" : "#f8f8f8")) ?>;
-            --text: <?= ($primary_color == "#222831" ? "#fff" : "#222831") ?>;
-            --card: <?= ($primary_color == "#222831" ? "#393e46" : "#fff") ?>;
-            --link: <?= ($primary_color == "#007bff" ? "#007bff" : ($primary_color == "#222831" ? "#00adb5" : "#222831")) ?>;
-            --link-hover: <?= ($primary_color == "#007bff" ? "#0056b3" : "#007bff") ?>;
-        }
-        body {
-            font-family: Arial, sans-serif;
-            background: #f8f8f8;
-            color: #222831;
-            margin: 0;
-            padding: 20px;
-            text-align: center;
-        }
-        .container {
-            background: #fff;
-            color: #222831;
-            max-width: 700px;
-            margin: 30px auto;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px #eee;
-        }
-        .profile-img {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid #007bff;
-            margin-bottom: 15px;
-            background: #fff;
-        }
-        h1 {
-            margin-top: 0;
-            color: #007bff;
-        }
-        h2 {
-            margin-top: 30px;
-            color: #393e46;
-            font-size: 1.2em;
-        }
-        a.btn {
-            display: inline-block;
-            background: #007bff;
-            color: #fff;
-            padding: 8px 18px;
-            border-radius: 5px;
-            text-decoration: none;
-            margin: 8px 0;
-            transition: background 0.2s;
-        }
-        a.btn:hover {
-            background: #0056b3;
-        }
-        ul {
-            padding: 0;
-            margin: 0;
-        }
-        li {
-            list-style: none;
-            background: #f4f4f4;
-            margin-bottom: 15px;
-            padding: 14px;
-            border-radius: 8px;
-            text-align: left;
-        }
-        .projet-titre {
-            font-weight: bold;
-            color: #007bff;
-        }
-        @media (max-width: 600px) {
-            .container {
-                padding: 10px;
-            }
-            .profile-img {
-                width: 90px;
-                height: 90px;
-            }
-            li {
-                padding: 12px 8px;
-            }
-        }
-    </style>
+    
+    
+    <?php if (!empty($theme['custom_css'])): ?>
+        <?php if (strpos($theme['custom_css'], 'theme_css/') === 0): ?>
+            <link rel="stylesheet" href="/<?= htmlspecialchars($theme['custom_css']) ?>">
+        <?php else: ?>
+            <style><?= $theme['custom_css'] ?></style>
+        <?php endif; ?>
+    <?php endif; ?>
 </head>
 <body>
 <div class="container">
@@ -171,6 +109,9 @@ if ($current_theme_id) {
                     <?php if (!empty($projet['lien'])): ?>
                         <a href="<?= htmlspecialchars($projet['lien']) ?>" target="_blank" class="btn">Voir le projet</a>
                     <?php endif; ?>
+                    <?php if (!empty($projet['image'])): ?>
+    <img src="/<?= htmlspecialchars($projet['image']) ?>" alt="Image du projet" style="max-width:200px;">
+<?php endif; ?>
                 </li>
             <?php endforeach; ?>
         </ul>

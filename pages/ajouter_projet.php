@@ -11,7 +11,7 @@ $utilisateur_id = $_SESSION['utilisateur_id'];
 
 try {
     // Connexion à la base
-    $db = new PDO("sqlite:db/ma_base.db");
+    $db = new PDO("sqlite:../db/ma_base.db");
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Traitement du formulaire
@@ -19,16 +19,27 @@ try {
         $titre = trim($_POST['titre'] ?? '');
         $description = trim($_POST['description'] ?? '');
         $lien = trim($_POST['lien'] ?? '');
+        $img_path = null;
+        if (isset($_FILES['img']) && $_FILES['img']['error'] == 0) {
+            $target_dir = "../images/";
+            if (!is_dir($target_dir)) mkdir($target_dir, 0777, true);
+            $ext = strtolower(pathinfo($_FILES['img']['name'], PATHINFO_EXTENSION));
+            $filename = uniqid("projet_") . "." . $ext;
+            $target_file = $target_dir . $filename;
+            move_uploaded_file($_FILES['img']['tmp_name'], $target_file);
+            $img_path = "images/" . $filename;
+        }
 
         if (!empty($titre) && !empty($description)) {
             // Insertion dans la table projets
-            $stmt = $db->prepare("INSERT INTO projets (utilisateur_id, titre, description, lien)
-                                  VALUES (:uid, :titre, :desc, :lien)");
+            $stmt = $db->prepare("INSERT INTO projets (utilisateur_id, titre, description, lien, image)
+                                  VALUES (:uid, :titre, :desc, :lien, :image)");
             $stmt->execute([
                 ':uid' => $utilisateur_id,
                 ':titre' => $titre,
                 ':desc' => $description,
-                ':lien' => $lien
+                ':lien' => $lien,
+                ':image' => $img_path
             ]);
 
             header("Location: dashboard.php");

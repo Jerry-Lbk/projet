@@ -46,7 +46,7 @@ try {
     }
 
     // Gestion de l'upload de photo
-    if (isset($_POST['upload_photo']) && isset($_FILES['photo']) && $_FILES['photo']['error'] == 0) {
+    if (isset($_FILES['photo']) && $_FILES['photo']['error'] == 0) {
         $target_dir = "../images/";
         if (!is_dir($target_dir)) mkdir($target_dir, 0777, true);
         $ext = strtolower(pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION));
@@ -60,6 +60,17 @@ try {
         header("Location: profil.php");
         exit();
     }
+
+    $theme = [
+        'primary_color' => '#007bff',
+        'custom_css' => ''
+    ];
+    if (!empty($utilisateur['theme_id'])) {
+        $stmt = $db->prepare("SELECT * FROM themes WHERE id = ?");
+        $stmt->execute([$utilisateur['theme_id']]);
+        $theme_db = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($theme_db) $theme = $theme_db;
+    }
 } catch (PDOException $e) {
     $erreur = "Erreur de base de données : " . $e->getMessage();
 }
@@ -70,9 +81,88 @@ try {
 <head>
     <meta charset="UTF-8">
     <title>Mon profil</title>
-    <link rel="stylesheet" href="css/style.css">
+    <?php if (!empty($theme['custom_css'])): ?>
+        <?php if (strpos($theme['custom_css'], 'theme_css/') === 0): ?>
+            <link rel="stylesheet" href="/<?= htmlspecialchars($theme['custom_css']) ?>">
+        <?php else: ?>
+            <style><?= $theme['custom_css'] ?></style>
+        <?php endif; ?>
+    <?php endif; ?>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(120deg, #eaf4ff 0%, #f8f8f8 100%);
+            color: #222831;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            background: #fff;
+            max-width: 420px;
+            margin: 48px auto 0 auto;
+            padding: 32px 28px 28px 28px;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+            text-align: center;
+        }
+        .profile-img {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #007bff;
+            margin-bottom: 18px;
+            background: #fff;
+            box-shadow: 0 2px 8px #eaf4ff;
+        }
+        h2 {
+            margin-top: 0;
+            font-size: 2em;
+            color: #007bff;
+            letter-spacing: 1px;
+        }
+        input[type="text"], input[type="email"], input[type="password"] {
+            width: 90%;
+            padding: 8px;
+            margin: 8px 0;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 1em;
+        }
+        input[type="file"] {
+            margin: 10px 0;
+        }
+        input[type="submit"] {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 20px;
+            font-size: 1em;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        input[type="submit"]:hover {
+            background: #0056b3;
+        }
+        p a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        p a:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 600px) {
+            .container { padding: 18px 6px; }
+            .profile-img { width: 80px; height: 80px; }
+            h2 { font-size: 1.3em; }
+            input[type="text"], input[type="email"], input[type="password"] { font-size: 0.95em; }
+        }
+    </style>
 </head>
 <body>
+<div class="container">
     <h2>Mon profil</h2>
 
     <?php if ($erreur): ?>
@@ -83,21 +173,18 @@ try {
     <?php endif; ?>
 
     <?php if (!empty($utilisateur['photo'])): ?>
-        <img src="<?= htmlspecialchars($utilisateur['photo']) ?>" alt="Photo de profil" class="profile-img"><br>
+        <img src="/<?= htmlspecialchars($utilisateur['photo']) ?>" alt="Photo de profil" class="profile-img"><br>
     <?php endif; ?>
 
-    <form method="POST" enctype="">
+    <form method="POST" enctype="multipart/form-data">
         <input type="text" name="nom" value="<?= htmlspecialchars($utilisateur['nom']) ?>" placeholder="Nom"><br>
         <input type="email" name="email" value="<?= htmlspecialchars($utilisateur['email']) ?>" placeholder="Email"><br>
         <input type="password" name="mot_de_passe" placeholder="Nouveau mot de passe (laisser vide si inchangé)"><br>
+        <input type="file" name="photo" accept="image/*"><br>
         <input type="submit" value="Mettre à jour">
     </form>
 
-    <form method="POST" enctype="multipart/form-data">
-        <input type="file" name="photo" accept="image/*"><br>
-        <input type="submit" name="upload_photo" value="Changer la photo de profil">
-    </form>
-
     <p><a href="dashboard.php">⬅ Retour au dashboard</a></p>
+</div>
 </body>
 </html>

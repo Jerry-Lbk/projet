@@ -1,6 +1,6 @@
 <?php
 // Connexion à la base
-$db = new PDO('sqlite:db/ma_base.db');
+$db = new PDO('sqlite:../db/ma_base.db');
 $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 // Traitement du formulaire

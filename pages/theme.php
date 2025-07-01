@@ -100,7 +100,7 @@ if ($current_theme_id) {
             </label>
         <?php endforeach; ?>
         <div style="margin-top:2em;">
-            <button type="submit">Enregistrer</button>
+            <button type="submit" target="_blank">Enregistrer</button>
         </div>
     </form>
 </body>
