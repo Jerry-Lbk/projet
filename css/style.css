@@ -1,128 +1,106 @@
- * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      text-decoration: none;
-      list-style: none;
-    }
-
-    body {
-      font-size: 24px;
-      overflow-x: hidden;
-    }
-
-    nav {
-      background-color: #fff;
-      height: 80px;
-      width: 100%;
-      margin-bottom: 50px;
-    }
-
-    nav ul {
-      display: flex;
-      gap: 15px;
-      align-items: center;
-      justify-content: end;
-      height: 100%;
-      padding-right: 20px;
-    }
-
-    a {
-      color: black;
-    }
-
-    a:hover {
-      text-decoration: underline;
-      text-decoration-color: rgb(0, 0, 0);
-    }
-
-    .bouton,
-    .menu-hidden {
-      display: none;
-    }
-
-    @media (max-width: 800px) {
-      nav {
-        display: none;
-      } .bouton {
-    display: flex;
-    justify-content: flex-end;
-    position: fixed;
-    top: 15px;
-    right: 15px;
-    z-index: 1001;
-  }
-
-  .menu {
-    background-color: rgba(0, 0, 0, 0.7);
-    color: #fff;
-    font-size: 1.8rem;
-    padding: 12px 16px;
-    border: none;
-    border-radius: 50%;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
-  }
-
-  .menu:hover {
-    background-color: rgba(0, 0, 0, 0.9);
-    transform: scale(1.05);
-  }
+/* Style for the user profile and portfolio submission page */
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(120deg, #eaf4ff 0%, #f8f8f8 100%);
+  color: #222831;
+  margin: 0;
+  padding: 0;
 }
 
+.container {
+  background: #fff;
+  max-width: 420px;
+  margin: 48px auto 0 auto;
+  padding: 32px 28px 28px 28px;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.10);
+  text-align: center;
+}
 
-      .menu-hidden {
-        display: none;
-        background-color: rgba(0, 0, 0, 0.9);
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100vh;
-        z-index: 1000;
-        padding: 50px 20px;
-        color: white;
-        flex-direction: column;
-        gap: 20px;
-      }
-      
-      .menu-hidden ul {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-      }
+.profile-img {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #007bff;
+  margin-bottom: 18px;
+  background: #fff;
+  box-shadow: 0 2px 8px #eaf4ff;
+}
 
-      .menu-hidden a {
-        color: white;
-        font-size: 24px;
-        text-align: center;
-      }
+h2 {
+  margin-top: 0;
+  font-size: 2em;
+  color: #007bff;
+  letter-spacing: 1px;
+}
 
-      .menu-hidden .close {
-        position: absolute;
-        top: 10px;
-        right: 20px;
-        background: none;
-        border: none;
-        color: white;
-        font-size: 20px;
-        font-weight: bold;
-      }
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: 60%;
+  padding: 8px;
+  margin: 8px 0;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1em;
+}
 
-      .presentation {
-        margin-top: 60px;
-        padding: 1.5rem;
-      }
+input[type="file"] {
+  margin: 10px 0;
+}
 
-      .presentation h1 {
-        font-size: 2rem;
-      }
+input[type="submit"] {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 1em;
+  margin-top: 10px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
 
-      .presentation p {
-        font-size: 1rem;
-      }
+textarea {
+  width: 90%;
+  min-width: 250px;
+  max-width: 500px;
+  min-height: 100px;
+  font-size: 1em;
+  margin-bottom: 1em;
+}
 
-      footer {
-        font-size: 0.8rem;
-      }
+input[type="submit"]:hover {
+  background: #0056b3;
+}
+
+p a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+p a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: 18px 6px;
+  }
+
+  .profile-img {
+    width: 80px;
+    height: 80px;
+  }
+
+  h2 {
+    font-size: 1.3em;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="password"] {
+    font-size: 0.95em;
+  }
+}

@@ -74,15 +74,15 @@
   <h1>Bienvenue sur CREON</h1>
   <p>Quel action souhaitez-vous realiser ?</p>
   <section class="visit">
-    <a href="visite.html" target="_blank">
-      <img src="favicon.png" alt="visitez les portfolio" />
+    <a href="liste.php" target="_blank">
+      <img src="../favicon.png" alt="visitez les portfolio" />
     </a>
     <h5>visite</h5>
   </section>
 
   <section class="visit">
     <a href="register.php" target="_blank">
-      <img src="creer.png" alt="cree votre propre portfolio" />
+      <img src="../creer.png" alt="cree votre propre portfolio" />
     </a>
     <h5>creer votre portfolio</h5>
   </section>

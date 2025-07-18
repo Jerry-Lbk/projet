@@ -9,11 +9,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'] ?? '';
     $mot_de_passe = $_POST['mot_de_passe'] ?? '';
 
+
     // Sécurité : éviter les champs vides
     if ($nom && $email && $mot_de_passe) {
         // Hachage du mot de passe
         $hash = password_hash($mot_de_passe, PASSWORD_DEFAULT);
-
+        
         // Requête préparée pour éviter les injections SQL
         $stmt = $db->prepare("INSERT INTO utilisateurs (nom, email, mot_de_passe) VALUES (?, ?, ?)");
         try {
@@ -28,29 +29,105 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-
+<
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
     <title>Inscription</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(120deg, #eaf4ff 0%, #f8f8f8 100%);
+            color: #222831;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            background: #fff;
+            max-width: 420px;
+            margin: 48px auto 0 auto;
+            padding: 32px 28px 28px 28px;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+            text-align: center;
+        }
+        .profile-img {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #007bff;
+            margin-bottom: 18px;
+            background: #fff;
+            box-shadow: 0 2px 8px #eaf4ff;
+        }
+        h2 {
+            margin-top: 0;
+            font-size: 2em;
+            color: #007bff;
+            letter-spacing: 1px;
+        }
+        input[type="text"], input[type="email"], input[type="password"] {
+            width: 90%;
+            padding: 8px;
+            margin: 8px 0;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 1em;
+        }
+        input[type="file"] {
+            margin: 10px 0;
+        }
+        input[type="submit"] {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 20px;
+            font-size: 1em;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        input[type="submit"]:hover {
+            background: #0056b3;
+        }
+        p a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        p a:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 600px) {
+            .container { padding: 18px 6px; }
+            .profile-img { width: 80px; height: 80px; }
+            h2 { font-size: 1.3em; }
+            input[type="text"], input[type="email"], input[type="password"] { font-size: 0.95em; }
+        }
+    </style>
+
 </head>
+
 <body>
     <h2>Créer un compte</h2>
-    <?php if (isset($erreur)) echo "<p style='color:red;'>$erreur</p>"; ?>
-    <form method="post">
-        <label>Nom :</label><br>
-        <input type="text" name="nom" required><br><br>
-
-        <label>Email :</label><br>
-        <input type="email" name="email" required><br><br>
-
-        <label>Mot de passe :</label><br>
-        <input type="password" name="mot_de_passe" required><br><br>
-
-        <button type="submit">S'inscrire</button>
+    <?php if (isset($erreur))
+        echo "<p style='color:red;'>$erreur</p>"; ?>
+    <form method="POST" enctype="multipart/form-data">
+        <label for="nom">Entrez votre nom</label>
+        <input type="text" name="nom"><br>
+        <label for="email">Entrez votre Adresse électronique</label>
+        <input type="email" name="email"> <br>
+        <label for="pwd">Entrez votre mot de passe</label>
+        <input type="password" name="mot_de_passe"><br>
+        <label for="image">Choisissez votre photo de profil</label>
+        <input type="file" name="photo" accept="image/*"><br>
+        <input type="submit" value="Mettre à jour">
     </form>
     <p>Déjà inscrit ? <a href="login.php">Connexion</a></p>
 </body>
+
 </html>

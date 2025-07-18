@@ -1,0 +1,49 @@
+<div class="portfolio-list">
+    <?php foreach ($portfolios as $p): ?>
+        <div class="portfolio-card">
+            <img src="../<?= htmlspecialchars($p['photo']) ?>" alt="Photo de profil" class="profile-img">
+            <div class="info">
+                <h3><?= htmlspecialchars($p['titre']) ?></h3>
+                <p><strong>Par :</strong> <?= htmlspecialchars($p['nom']) ?></p>
+                <p><strong>Date :</strong> <?= date("d/m/Y", strtotime($p['date_creation'])) ?></p>
+                <a href="<?= htmlspecialchars($p['url']) ?>" target="_blank" class="btn">Voir</a>
+                <button class="btn btn-danger delete-portfolio" data-id="<?= $p['id'] ?>">Supprimer</button>
+            </div>
+        </div>
+    <?php endforeach; ?>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('.delete-portfolio').on('click', function() {
+            var id = $(this).data('id');
+            $.ajax({
+                type: 'POST',
+                url: '',
+                data: {id: id},
+                success: function(data) {
+                    if (data == 'success') {
+                        $(this).parent().parent().remove();
+                    } else {
+                        alert('Erreur lors de la suppression du portfolio');
+                    }
+                }
+            });
+        });
+    });
+</script>
+
+<?php
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $db = new SQLite3('bdd.db');
+    $id = $_POST['id'];
+    $requete = "DELETE FROM portfolios WHERE id = '$id'";
+    $resultat = $db->exec($requete);
+    if ($resultat) {
+        echo 'success';
+    } else {
+        echo 'erreur';
+    }
+    $db->close();
+}
+?>

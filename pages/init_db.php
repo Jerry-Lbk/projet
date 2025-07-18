@@ -51,6 +51,19 @@ try {
     // Ajout de la colonne custom_css à la table themes
     $db->exec("ALTER TABLE themes ADD COLUMN custom_css TEXT");
 
+    // Table portfolios (portfolios générés automatiquement)
+$db->exec("
+    CREATE TABLE IF NOT EXISTS portfolios (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        utilisateur_id INTEGER NOT NULL,
+        titre TEXT NOT NULL,
+        url TEXT NOT NULL,
+        date_creation TEXT DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY(utilisateur_id) REFERENCES utilisateurs(id)
+    );
+");
+
+
     echo "Base de données initialisée avec succès.";
 } catch (PDOException $e) {
     echo "Erreur : " . $e->getMessage();

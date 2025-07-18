@@ -1,8 +1,8 @@
 <?php
-// filepath: c:\Users\Mister One\Desktop\projet\pages\admin.php
+
 session_start();
 
-// (Optionnel) Sécurité admin
+
 // if (!isset($_SESSION['is_admin']) || !$_SESSION['is_admin']) { die('Accès interdit'); }
 
 $db = new PDO("sqlite:../db/ma_base.db");
@@ -108,6 +108,11 @@ $themes = $db->query("SELECT * FROM themes")->fetchAll(PDO::FETCH_ASSOC);
                     <?php else: ?>
                         <em>Aucun CSS</em>
                     <?php endif; ?>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <a href="delete_theme.php?id=<?= $theme['id'] ?>" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce thème ?');">Supprimer</a>
                 </td>
             </tr>
         <?php endforeach; ?>

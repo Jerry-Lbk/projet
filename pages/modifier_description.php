@@ -28,16 +28,24 @@ if (isset($_POST['description'])) {
 ?>
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <title>Modifier la description</title>
+    <link rel="stylesheet" href="/css/style.css">
     <style>
         body {
-            font-family: sans-serif;
-            background: #f8f8f8;
+
             padding: 2em;
             text-align: center;
+
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(120deg, #eaf4ff 0%, #f8f8f8 100%);
+            color: #222831;
+
+
         }
+
         textarea {
             width: 90%;
             min-width: 250px;
@@ -46,9 +54,11 @@ if (isset($_POST['description'])) {
             font-size: 1em;
             margin-bottom: 1em;
         }
+
         .success {
             color: green;
         }
+
         .desc-preview {
             background: #fff;
             border: 1px solid #ddd;
@@ -61,20 +71,21 @@ if (isset($_POST['description'])) {
         }
     </style>
 </head>
+
 <body>
     <h1>Votre description</h1>
     <?php if (!empty($_SESSION['success'])): ?>
-        <p class="success"><?= $_SESSION['success']; unset($_SESSION['success']); ?></p>
+        <p class="success"><?= $_SESSION['success'];
+        unset($_SESSION['success']); ?></p>
     <?php endif; ?>
 
     <form method="post">
-        <textarea name="description" placeholder="Décrivez-vous..."><?= htmlspecialchars($current_description) ?></textarea><br>
+        <textarea name="description"
+            placeholder="Décrivez-vous..."><?= htmlspecialchars($current_description) ?></textarea><br>
         <button type="submit">Enregistrer</button>
     </form>
 
-    <h2>Prévisualisation</h2>
-    <div class="desc-preview">
-        <?= nl2br(htmlspecialchars($current_description)) ?>
-    </div>
+<p><a href="dashboard.php">Retour au tableau de bord</a></p>
 </body>
+
 </html>

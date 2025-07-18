@@ -57,6 +57,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <title>Ajouter un projet</title>
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
     <h1>Ajouter un projet</h1>
