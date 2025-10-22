@@ -1,0 +1,6 @@
+:root {
+  --primary-color: #ff6b6b;
+  --secondary-color: #4ecdc4;
+}
+
+body { background: linear-gradient(45deg, #ff6b6b, #4ecdc4); }

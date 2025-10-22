@@ -1,0 +1,138 @@
+# Configuration Apache pour CREON
+
+# Activer la réécriture d'URL
+RewriteEngine On
+
+# Sécurité - Masquer les informations du serveur
+ServerTokens Prod
+ServerSignature Off
+
+# Empêcher l'accès aux fichiers sensibles
+<Files "config.php">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+<Files "database.php">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+<Files "error_handler.php">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+<Files "test_application.php">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# Empêcher l'accès aux fichiers de base de données
+<Files "*.db">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# Empêcher l'accès aux fichiers de configuration
+<Files ".htaccess">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# Empêcher l'accès aux fichiers de sauvegarde
+<Files "*.bak">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+<Files "*.backup">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# Empêcher l'accès aux fichiers temporaires
+<Files "*.tmp">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# Configuration des types MIME
+AddType application/x-httpd-php .php
+AddType image/jpeg .jpg .jpeg
+AddType image/png .png
+AddType image/gif .gif
+AddType image/webp .webp
+
+# Limiter la taille des uploads
+php_value upload_max_filesize 5M
+php_value post_max_size 5M
+php_value max_execution_time 30
+php_value max_input_time 30
+
+# Configuration de session
+php_value session.cookie_httponly 1
+php_value session.use_only_cookies 1
+php_value session.cookie_secure 0
+php_value session.cookie_samesite Lax
+php_value session.gc_maxlifetime 3600
+php_value session.gc_probability 1
+php_value session.gc_divisor 100
+
+# Configuration de sécurité PHP
+php_flag display_errors Off
+php_flag log_errors On
+php_value error_log /tmp/php_errors.log
+
+# Headers de sécurité
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options nosniff
+    Header always set X-Frame-Options DENY
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self';"
+</IfModule>
+
+# Compression GZIP
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+</IfModule>
+
+# Cache des fichiers statiques
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpg "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/gif "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/webp "access plus 1 month"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/pdf "access plus 1 month"
+    ExpiresByType text/javascript "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType application/x-javascript "access plus 1 month"
+    ExpiresByType application/x-shockwave-flash "access plus 1 month"
+    ExpiresByType image/x-icon "access plus 1 year"
+    ExpiresDefault "access plus 2 days"
+</IfModule>
+
+# Redirection vers la page d'accueil
+DirectoryIndex pages/index.php
+
+# Empêcher l'accès direct aux fichiers PHP dans le dossier pages
+<Directory "pages">
+    Options -Indexes
+    AllowOverride None
+</Directory>
+
+# Empêcher l'accès aux dossiers sensibles
+RedirectMatch 403 ^/db/.*$
+RedirectMatch 403 ^/theme_css/.*$

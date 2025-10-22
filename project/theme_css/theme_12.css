@@ -1,0 +1,20 @@
+:root {
+  --primary-color: #b3b3b3;
+  --secondary-color: #9f9f9f;
+}
+
+:root {
+  --primary-color: #b3b3b3;
+  --secondary-color: #9f9f9f;
+}
+
+body {
+  background: #1a1a1a;
+  color: #fff;
+}
+
+.container {
+  background: #2d2d2d;
+  color: #fff;
+}
+
